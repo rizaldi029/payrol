@@ -38,6 +38,14 @@ class Pegawai extends CI_Controller {
 		];
 		$this->db->insert('absen',$data);
 		$this->session->set_flashdata('message', 'swal("Berhasil!", "Melakukan absen", "success");');
+		$this->form_validation->set_rules('userfile','absen' , 'callback_validasi_file');
+		;
+		if ($this->form_validation_run()) 
+			$upload = $this->upload->data();
+			$file_name + $upload['file_name'];
+			$param = array(
+				'pegawai' => $file_name,
+			);
 		redirect('pegawai');
 	}
 	//data absen
@@ -226,4 +234,17 @@ class Pegawai extends CI_Controller {
 		$data['title']	= 'Slip Gaji '.$this->session->userdata('nama');
 		$this->load->view('pegawai/slip_print',$data);
 	}
-}
+	public function validasi_file()
+	{
+		$config['upload_path']          = './bukti/file/';
+        $config['allowed_types']        = '*';
+        $config['max_size']             = 2048;
+
+		$this->load->library('upload', $config);
+
+		if($this->upload->do_upload()){
+			return TRUE;
+		}else
+			$this->form_validation->set_message('validasi_file', $this->upload->display_errors());
+			return FALSE;
+	}}
